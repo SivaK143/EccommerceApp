@@ -21,8 +21,8 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
 
     //save product with Category
-    public ProductResponseDTO save(ProductRequestDTO productRequestDTO){
-        Category category = categoryRepository.findById(productRequestDTO.getCategoryId()).orElseThrow(()-> new ResourceNotFoundException(
+    public ProductResponseDTO save(ProductRequestDTO productRequestDTO) {
+        Category category = categoryRepository.findById(productRequestDTO.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException(
                 "Category not found with id: " + productRequestDTO.getCategoryId()));
         Product product = ProductMapper.toEntity(productRequestDTO);
         product.setCategory(category);
@@ -31,9 +31,33 @@ public class ProductService {
     }
 
     //get all products
-    public List<ProductResponseDTO> getAll(){
+    public List<ProductResponseDTO> getAll() {
         return productRepository.findAll()
                 .stream().map(product -> ProductMapper.toDTO(product))
                 .toList();
     }
+
+    //getBy id
+
+    public ProductResponseDTO getById(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        return ProductMapper.toDTO(product);
+    }
+
+    //update Product
+    public ProductResponseDTO updateProduct(Long id, ProductRequestDTO dto) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
+        return ProductMapper.toDTO(productRepository.save(product));
+    }
+
+    //delete Product
+    public void deleteProduct(Long id) {
+        if(!productRepository.existsById(id)){
+            throw new ResourceNotFoundException("Product not found with id: " + id);
+        }
+        productRepository.deleteById(id);
+    }
+
 }

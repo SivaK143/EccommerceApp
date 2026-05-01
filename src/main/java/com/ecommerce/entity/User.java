@@ -1,5 +1,6 @@
 package com.ecommerce.entity;
 
+import com.ecommerce.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,5 +17,6 @@ public class User {
     private String username;
     @Column(nullable = false)
     private String password;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

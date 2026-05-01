@@ -2,6 +2,7 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.UserRequestDTO;
 import com.ecommerce.entity.User;
+import com.ecommerce.enums.Role;
 import com.ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +20,8 @@ public class UserService {
         user.setUsername(dto.getUsername());
         //Encode password
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRole("ROLE_USER");
+        System.out.println(passwordEncoder.encode("1234"));
+        user.setRole(Role.USER);
         userRepository.save(user);
 
     }

@@ -3,8 +3,10 @@ package com.ecommerce.service;
 import com.ecommerce.dto.CategoryRequestDTO;
 import com.ecommerce.dto.CategoryResponseDTO;
 import com.ecommerce.entity.Category;
+import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.mapper.CategoryMapper;
 import com.ecommerce.repository.CategoryRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +32,27 @@ public class CategoryService {
                 .toList();
     }
 
+    //get By id
+    public CategoryResponseDTO getById(Long id) {
+        Category category = categoryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Category not found with id: " + id));
+        return CategoryMapper.toDto(category);
+    }
+
+
+    //update Category
+    public CategoryResponseDTO updateCategory(Long id, @Valid CategoryRequestDTO dto) {
+        Category category = categoryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Category not found with id: " + id));
+        category.setName(dto.getName());
+        return CategoryMapper.toDto(categoryRepository.save(category));
+    }
+
+    //delete category
+    public void deleteCategory(Long id) {
+        if(!categoryRepository.existsById(id)){
+            throw new ResourceNotFoundException("Category not found with id: " + id);
+        }
+        categoryRepository.deleteById(id);
+    }
+    
 
 }

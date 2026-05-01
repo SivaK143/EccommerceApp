@@ -11,4 +11,5 @@ public class UserRequestDTO {
     private String username;
     @NotBlank(message = "Password is required")
     private String password;
+
 }
