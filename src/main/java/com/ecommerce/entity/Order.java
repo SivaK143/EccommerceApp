@@ -1,5 +1,6 @@
 package com.ecommerce.entity;
 
+import com.ecommerce.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -25,7 +26,8 @@ public class Order {
 
     private LocalDateTime orderDate;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<OrderItem> items;

@@ -2,11 +2,14 @@ package com.ecommerce.service;
 
 import com.ecommerce.dto.OrderItemRequestDTO;
 import com.ecommerce.dto.OrderRequestDTO;
+import com.ecommerce.dto.OrderResponseDTO;
 import com.ecommerce.entity.Order;
 import com.ecommerce.entity.OrderItem;
 import com.ecommerce.entity.Product;
 import com.ecommerce.entity.User;
+import com.ecommerce.enums.OrderStatus;
 import com.ecommerce.exception.ResourceNotFoundException;
+import com.ecommerce.mapper.OrderMapper;
 import com.ecommerce.repository.OrderRepository;
 import com.ecommerce.repository.ProductRepository;
 import com.ecommerce.repository.UserRepository;
@@ -38,7 +41,7 @@ public class OrderService {
         Order order = new Order();
         order.setUser(user);
         order.setOrderDate(LocalDateTime.now());
-        order.setStatus("CREATED");
+        order.setStatus(OrderStatus.CREATED);
 
         List<OrderItem> orderItems = new ArrayList<>();
         double totalAmount=0;
@@ -71,6 +74,31 @@ public class OrderService {
         //save the order
         orderRepository.save(order);
 
+    }
+
+    //getMy Orders
+
+    public List<OrderResponseDTO> getMyOrders(){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        //fetch user
+
+        User user = userRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("User not found with username :"+ username));
+        //fetch list of orders by using findByUser method in repository
+        List<Order> orders = orderRepository.findByUser(user);
+
+        return orders.stream()
+                .map(order -> OrderMapper.mapToDTO(order))
+                .toList();
+    }
+
+    //getAll Orders
+
+    public List<OrderResponseDTO> getAllOrders(){
+
+        return orderRepository.findAll()
+                .stream()
+                .map(order-> OrderMapper.mapToDTO(order))
+                .toList();
     }
 
 }

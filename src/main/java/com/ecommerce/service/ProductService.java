@@ -9,6 +9,8 @@ import com.ecommerce.mapper.ProductMapper;
 import com.ecommerce.repository.CategoryRepository;
 import com.ecommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,10 +33,16 @@ public class ProductService {
     }
 
     //get all products
-    public List<ProductResponseDTO> getAll() {
-        return productRepository.findAll()
-                .stream().map(product -> ProductMapper.toDTO(product))
-                .toList();
+//    public List<ProductResponseDTO> getAll() {
+//        return productRepository.findAll()
+//                .stream().map(product -> ProductMapper.toDTO(product))
+//                .toList();
+//    }
+
+    //Get All Products with Pageable
+    public Page<ProductResponseDTO> getAll(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(product -> ProductMapper.toDTO(product));
     }
 
     //getBy id
